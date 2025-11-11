@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Ecommerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            color: #000000;
+        }
+        body > .container {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        nav .container {
+            background: transparent !important;
+        }
+        .table {
+            background: transparent;
+        }
+        .btn-dark {
+            background: #000000;
+            border-color: #000000;
+        }
+        .btn-dark:hover {
+            background: #333333;
+            border-color: #333333;
+        }
+        .btn-danger {
+            background: #000000;
+            border-color: #000000;
+        }
+        .btn-danger:hover {
+            background: #333333;
+            border-color: #333333;
+        }
+    </style>
+</head>
+<body>
+{% load cart_filters %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🛒 ECOMMERCE</a>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h2 class="mb-4">🛒 Your Shopping Cart</h2>
+    {% if cart %}
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, item in cart.items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.price }}</td>
+                <td>₹{{ item.price|multiply:item.quantity|floatformat:2 }}</td>
+                <td><a href="{% url 'remove_from_cart' id %}" class="btn btn-danger btn-sm">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <h4>Total: ₹{{ total }}</h4>
+        <a href="{% url 'checkout' %}" class="btn btn-dark btn-lg mt-3">Proceed to Checkout</a>
+    </div>
+    {% else %}
+        <p>Your cart is empty 😔</p>
+    {% endif %}
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <p class="mb-0">© 2025 Ecommerce | Designed by Suraj</p>
+</footer>
+
+</body>
+</html>
