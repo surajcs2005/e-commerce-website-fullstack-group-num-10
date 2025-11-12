@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Ecommerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            color: #000000;
+        }
+        body > .container {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 40px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        nav .container {
+            background: transparent !important;
+        }
+        .btn-dark {
+            background: #000000;
+            border-color: #000000;
+        }
+        .btn-dark:hover {
+            background: #333333;
+            border-color: #333333;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🛒 ECOMMERCE</a>
+    </div>
+</nav>
+
+<div class="container text-center my-5">
+    <h2 class="fw-bold mb-4">🛒 Checkout Summary</h2>
+    <p class="lead mb-3">Please proceed to confirm your payment.</p>
+    <a href="{% url 'payment_page' %}" class="btn btn-dark btn-lg">Proceed to Payment</a>
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <p class="mb-0">© 2025 Ecommerce | Designed by Suraj</p>
+</footer>
+
+</body>
+</html>

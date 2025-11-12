@@ -1,0 +1,677 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment | Ecommerce{% endblock %}
+
+{% block extra_css %}
+    .payment-container {
+        background: #ffffff;
+        border: 2px solid #000000;
+        border-radius: 10px;
+        padding: 40px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .payment-info {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .payment-methods {
+        margin: 30px 0;
+    }
+    .payment-method-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+    .payment-method-card:hover {
+        border-color: #000000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .payment-method-card.selected {
+        border-color: #000000;
+        background: #f8f9fa;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .payment-method-card input[type="radio"] {
+        margin-right: 10px;
+        transform: scale(1.5);
+        accent-color: #000000;
+    }
+    .payment-method-card label {
+        cursor: pointer;
+        margin: 0;
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+    }
+    .payment-method-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+    }
+    .payment-method-desc {
+        color: #666666;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        margin-left: 35px;
+    }
+    .btn-pay {
+        background: #000000;
+        color: #ffffff;
+        border: 2px solid #000000;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 20px;
+    }
+    .btn-pay:hover {
+        background: #333333;
+        border-color: #333333;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .btn-pay:disabled {
+        background: #cccccc;
+        border-color: #cccccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+    #payment-form {
+        display: none;
+    }
+    .upi-note {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #856404;
+    }
+    .cod-note {
+        background: #d1ecf1;
+        border: 1px solid #0c5460;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #0c5460;
+    }
+    .upi-qr-section {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background: #1a1a1a;
+        border-radius: 15px;
+        border: 2px solid #000000;
+    }
+    .upi-qr-section.active {
+        display: block;
+    }
+    .qr-code-container {
+        background: #2d2d2d;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    .qr-code-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+    .qr-code-header .bank-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #0066cc;
+        border: 2px solid #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 1.2rem;
+    }
+    .qr-code-header .bank-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    .qr-code-wrapper {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        display: inline-block;
+        margin: 20px 0;
+        position: relative;
+    }
+    .qr-code-wrapper img {
+        max-width: 300px;
+        height: auto;
+        display: block;
+    }
+    .upi-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background: #000000;
+        border-radius: 50%;
+        border: 3px solid #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #ffffff;
+        font-weight: bold;
+    }
+    .qr-instructions {
+        color: #cccccc;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    .upi-payment-options {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: center;
+    }
+    .btn-upi-option {
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+    .btn-upi-option:hover {
+        background: #000000;
+        color: #ffffff;
+    }
+    .btn-upi-option.active {
+        background: #000000;
+        color: #ffffff;
+    }
+    .view-upi-details {
+        color: #9d4edd;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 15px;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+    .view-upi-details:hover {
+        color: #7b2cbf;
+    }
+    .upi-details-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .upi-details-modal.active {
+        display: flex;
+    }
+    .upi-details-content {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 90%;
+    }
+    .close-modal {
+        float: right;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #000000;
+    }
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-container">
+        <h2 class="fw-bold mb-4 text-center">💳 Select Payment Method</h2>
+        
+        <div class="payment-info text-center">
+            <h4 class="mb-3">Order Summary</h4>
+            <p class="lead mb-0">Total Amount: <strong>₹{{ total }}</strong></p>
+        </div>
+
+        <form id="payment-method-form" method="POST" action="{% url 'payment_success' %}">
+            {% csrf_token %}
+            <input type="hidden" name="payment_method" id="payment_method" value="">
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+            
+            <div class="payment-methods">
+                <!-- UPI Payment Option -->
+                {% if upi_qr_code or razorpay_enabled %}
+                <div class="payment-method-card" id="upi-card" onclick="selectPaymentMethod('upi')">
+                    <label for="payment_upi">
+                        <input type="radio" id="payment_upi" name="payment_option" value="upi" onchange="selectPaymentMethod('upi')">
+                        <span class="payment-method-icon">📱</span>
+                        <div>
+                            <div>UPI Payment</div>
+                            <div class="payment-method-desc">Pay using UPI QR Code{% if razorpay_enabled and order_id and razorpay_key %}, Credit/Debit Card, Net Banking, Wallets{% endif %}</div>
+                        </div>
+                    </label>
+                    <div class="upi-note" id="upi-note" style="display: none;">
+                        {% if upi_qr_code %}Scan the QR code or {% endif %}{% if razorpay_enabled and order_id and razorpay_key %}choose payment gateway{% endif %}
+                    </div>
+                    
+                    <!-- UPI QR Code Section -->
+                    <div class="upi-qr-section" id="upi-qr-section">
+                        {% if upi_qr_code and razorpay_enabled and order_id and razorpay_key %}
+                        <div class="upi-payment-options">
+                            <button type="button" class="btn-upi-option active" onclick="showPaymentMethod('qr')" id="btn-qr">Scan QR Code</button>
+                            <button type="button" class="btn-upi-option" onclick="showPaymentMethod('gateway')" id="btn-gateway">Pay via Gateway</button>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- QR Code Display -->
+                        <div id="qr-code-display" class="qr-code-display" {% if upi_qr_code %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                            {% if upi_qr_code %}
+                            <div class="qr-code-container">
+                                <div class="qr-code-header">
+                                    <div class="bank-icon">🏦</div>
+                                    <div class="bank-name">State Bank of India - 6415</div>
+                                </div>
+                                <div class="qr-code-wrapper">
+                                    <img src="{{ upi_qr_code }}" alt="UPI QR Code" id="upi-qr-image">
+                                    <div class="upi-logo">पे</div>
+                                </div>
+                                <div class="qr-instructions">
+                                    <p><strong>How to pay:</strong></p>
+                                    <p>1. Open any UPI app (PhonePe, Google Pay, Paytm, etc.)</p>
+                                    <p>2. Scan this QR code</p>
+                                    <p>3. Enter the amount: <strong>₹{{ total }}</strong></p>
+                                    <p>4. Complete the payment</p>
+                                </div>
+                                <a href="#" class="view-upi-details" onclick="showUpiDetails(); return false;">View UPI details</a>
+                            </div>
+                            {% else %}
+                            <div class="qr-code-container">
+                                <p style="color: #ffffff;">UPI QR code is not configured. Please configure UPI_ID in settings.py</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Gateway Payment Option -->
+                        {% if razorpay_enabled and order_id and razorpay_key %}
+                        <div id="gateway-display" class="gateway-display" style="display: none;">
+                            <div style="padding: 20px; text-align: center; color: #ffffff;">
+                                <p>Click the "Pay ₹{{ total }}" button below to open Razorpay payment gateway.</p>
+                                <p style="font-size: 0.9rem; margin-top: 10px;">You can pay using Credit/Debit Card, Net Banking, or Wallets.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Cash on Delivery Option -->
+                <div class="payment-method-card selected" id="cod-card" onclick="selectPaymentMethod('cod')">
+                    <label for="payment_cod">
+                        <input type="radio" id="payment_cod" name="payment_option" value="cod" onchange="selectPaymentMethod('cod')" checked>
+                        <span class="payment-method-icon">💵</span>
+                        <div>
+                            <div>Cash on Delivery (COD)</div>
+                            <div class="payment-method-desc">Pay cash when your order is delivered</div>
+                        </div>
+                    </label>
+                    <div class="cod-note" id="cod-note">
+                        Pay cash to the delivery person when you receive your order. No online payment required.
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="proceed-btn" class="btn-pay" onclick="proceedPayment()" disabled>
+                Place Order
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- UPI Details Modal -->
+<div class="upi-details-modal" id="upi-details-modal" onclick="closeUpiDetails()">
+    <div class="upi-details-content" onclick="event.stopPropagation()">
+        <span class="close-modal" onclick="closeUpiDetails()">&times;</span>
+        <h4 class="mb-3">UPI Payment Details</h4>
+        <div class="info-item">
+            <span class="info-label">UPI ID:</span>
+            <span class="info-value">{{ upi_id }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Merchant Name:</span>
+            <span class="info-value">Ecommerce</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Amount:</span>
+            <span class="info-value">₹{{ total }}</span>
+        </div>
+        <p class="mt-3"><small>You can also pay directly using UPI ID if QR code scanning is not available.</small></p>
+    </div>
+</div>
+
+{% if razorpay_enabled and order_id and razorpay_key %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var selectedPaymentMethod = 'cod';
+    var razorpayKey = "{{ razorpay_key }}";
+    var amount = {{ amount }};
+    var orderId = "{{ order_id }}";
+
+    function selectPaymentMethod(method) {
+        selectedPaymentMethod = method;
+        document.getElementById('payment_method').value = method;
+        
+        // Update UI - remove selected from all cards
+        var cards = document.querySelectorAll('.payment-method-card');
+        cards.forEach(function(card) {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected to the chosen card
+        var targetCard = document.getElementById(method + '-card');
+        if (targetCard) {
+            targetCard.classList.add('selected');
+        }
+        
+        // Update radio button
+        var radioBtn = document.getElementById('payment_' + method);
+        if (radioBtn) {
+            radioBtn.checked = true;
+        }
+        
+        // Show/hide notes
+        var upiNote = document.getElementById('upi-note');
+        var codNote = document.getElementById('cod-note');
+        var upiQrSection = document.getElementById('upi-qr-section');
+        if (upiNote) {
+            upiNote.style.display = method === 'upi' ? 'block' : 'none';
+        }
+        if (codNote) {
+            codNote.style.display = method === 'cod' ? 'block' : 'none';
+        }
+        if (upiQrSection) {
+            if (method === 'upi') {
+                upiQrSection.classList.add('active');
+                {% if upi_qr_code and razorpay_enabled and order_id and razorpay_key %}
+                showPaymentMethod('qr'); // Default to QR code if both available
+                {% elif upi_qr_code %}
+                // Only QR code available
+                var qrDisplay = document.getElementById('qr-code-display');
+                if (qrDisplay) {
+                    qrDisplay.style.display = 'block';
+                }
+                var proceedBtn = document.getElementById('proceed-btn');
+                if (proceedBtn) {
+                    proceedBtn.textContent = 'I have paid';
+                    proceedBtn.disabled = false;
+                }
+                currentUpiOption = 'qr';
+                {% endif %}
+            } else {
+                upiQrSection.classList.remove('active');
+            }
+        }
+        
+        // Enable proceed button
+        var proceedBtn = document.getElementById('proceed-btn');
+        if (proceedBtn) {
+            proceedBtn.disabled = false;
+            
+            // Update button text based on payment method and option
+            if (method === 'upi') {
+                {% if upi_qr_code and razorpay_enabled and order_id and razorpay_key %}
+                var currentPaymentOption = document.querySelector('.btn-upi-option.active');
+                if (currentPaymentOption && currentPaymentOption.getAttribute('onclick') && currentPaymentOption.getAttribute('onclick').includes('qr')) {
+                    proceedBtn.textContent = 'I have paid';
+                } else {
+                    proceedBtn.textContent = 'Pay ₹{{ total }}';
+                }
+                {% elif upi_qr_code %}
+                proceedBtn.textContent = 'I have paid';
+                {% else %}
+                proceedBtn.textContent = 'Pay ₹{{ total }}';
+                {% endif %}
+                proceedBtn.style.display = 'block';
+            } else {
+                proceedBtn.textContent = 'Place Order';
+                proceedBtn.style.display = 'block';
+            }
+        }
+    }
+    
+    var currentUpiOption = '{% if upi_qr_code %}qr{% else %}gateway{% endif %}';
+    
+    function showPaymentMethod(option) {
+        currentUpiOption = option;
+        
+        // Update button states
+        var btnQr = document.getElementById('btn-qr');
+        var btnGateway = document.getElementById('btn-gateway');
+        var qrDisplay = document.getElementById('qr-code-display');
+        var gatewayDisplay = document.getElementById('gateway-display');
+        var proceedBtn = document.getElementById('proceed-btn');
+        
+        if (btnQr && btnGateway) {
+            document.querySelectorAll('.btn-upi-option').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+        }
+        
+        if (option === 'qr') {
+            if (btnQr) btnQr.classList.add('active');
+            if (qrDisplay) qrDisplay.style.display = 'block';
+            if (gatewayDisplay) gatewayDisplay.style.display = 'none';
+            if (proceedBtn) proceedBtn.textContent = 'I have paid';
+        } else {
+            if (btnGateway) btnGateway.classList.add('active');
+            if (qrDisplay) qrDisplay.style.display = 'none';
+            if (gatewayDisplay) gatewayDisplay.style.display = 'block';
+            if (proceedBtn) proceedBtn.textContent = 'Pay ₹{{ total }}';
+        }
+    }
+    
+    function showUpiDetails() {
+        document.getElementById('upi-details-modal').classList.add('active');
+    }
+    
+    function closeUpiDetails() {
+        document.getElementById('upi-details-modal').classList.remove('active');
+    }
+
+    function proceedPayment() {
+        if (selectedPaymentMethod === 'upi') {
+            if (currentUpiOption === 'qr') {
+                // QR Code payment - user confirms they have paid
+                if (confirm('Have you completed the payment by scanning the QR code?')) {
+                    document.getElementById('payment_method').value = 'upi';
+                    // For QR code payments, we'll mark as paid (in production, you'd verify with webhook)
+                    document.getElementById('payment-method-form').submit();
+                }
+            } else {
+                // Gateway payment - open Razorpay
+                var options = {
+                    "key": razorpayKey,
+                    "amount": amount,
+                    "currency": "INR",
+                    "name": "Ecommerce",
+                    "description": "Payment for your order",
+                    "order_id": orderId,
+                    "handler": function (response){
+                        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                        document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                        document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                        document.getElementById('payment_method').value = 'upi';
+                        document.getElementById('payment-method-form').submit();
+                    },
+                    "prefill": {
+                        "name": "{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Customer{% endif %}",
+                        "email": "{% if user.is_authenticated %}{{ user.email|default:'' }}{% else %}''{% endif %}",
+                        "contact": ""
+                    },
+                    "theme": {
+                        "color": "#000000"
+                    },
+                    "modal": {
+                        "ondismiss": function(){
+                            // User closed the payment modal
+                        }
+                    }
+                };
+                var rzp = new Razorpay(options);
+                rzp.open();
+            }
+        } else if (selectedPaymentMethod === 'cod') {
+            // Cash on Delivery - submit form directly
+            document.getElementById('payment_method').value = 'cod';
+            document.getElementById('payment-method-form').submit();
+        }
+    }
+
+    // Initialize with COD selected
+    document.addEventListener('DOMContentLoaded', function() {
+        selectPaymentMethod('cod');
+        document.getElementById('proceed-btn').disabled = false;
+    });
+</script>
+{% else %}
+<script>
+    var selectedPaymentMethod = 'cod';
+    var currentUpiOption = '{% if upi_qr_code %}qr{% else %}gateway{% endif %}';
+
+    function selectPaymentMethod(method) {
+        selectedPaymentMethod = method;
+        document.getElementById('payment_method').value = method;
+        
+        // Update UI - remove selected from all cards
+        var cards = document.querySelectorAll('.payment-method-card');
+        cards.forEach(function(card) {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected to the chosen card
+        var targetCard = document.getElementById(method + '-card');
+        if (targetCard) {
+            targetCard.classList.add('selected');
+        }
+        
+        // Update radio button
+        var radioBtn = document.getElementById('payment_' + method);
+        if (radioBtn) {
+            radioBtn.checked = true;
+        }
+        
+        // Show/hide notes and QR section
+        var upiNote = document.getElementById('upi-note');
+        var codNote = document.getElementById('cod-note');
+        var upiQrSection = document.getElementById('upi-qr-section');
+        if (upiNote) {
+            upiNote.style.display = method === 'upi' ? 'block' : 'none';
+        }
+        if (codNote) {
+            codNote.style.display = method === 'cod' ? 'block' : 'none';
+        }
+        if (upiQrSection) {
+            if (method === 'upi') {
+                upiQrSection.classList.add('active');
+                {% if upi_qr_code %}
+                var qrDisplay = document.getElementById('qr-code-display');
+                if (qrDisplay) {
+                    qrDisplay.style.display = 'block';
+                }
+                currentUpiOption = 'qr';
+                {% endif %}
+            } else {
+                upiQrSection.classList.remove('active');
+            }
+        }
+        
+        // Enable proceed button
+        var proceedBtn = document.getElementById('proceed-btn');
+        if (proceedBtn) {
+            proceedBtn.disabled = false;
+            if (method === 'upi') {
+                {% if upi_qr_code %}
+                proceedBtn.textContent = 'I have paid';
+                {% else %}
+                proceedBtn.textContent = 'Pay ₹{{ total }}';
+                {% endif %}
+            } else {
+                proceedBtn.textContent = 'Place Order';
+            }
+        }
+    }
+    
+    function showUpiDetails() {
+        var modal = document.getElementById('upi-details-modal');
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+    
+    function closeUpiDetails() {
+        var modal = document.getElementById('upi-details-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    function proceedPayment() {
+        if (selectedPaymentMethod === 'upi') {
+            {% if upi_qr_code %}
+            // QR Code payment - user confirms they have paid
+            if (confirm('Have you completed the payment by scanning the QR code?')) {
+                document.getElementById('payment_method').value = 'upi';
+                document.getElementById('payment-method-form').submit();
+            }
+            {% else %}
+            alert('Payment gateway is not configured. Please use Cash on Delivery.');
+            {% endif %}
+        } else if (selectedPaymentMethod === 'cod') {
+            document.getElementById('payment_method').value = 'cod';
+            document.getElementById('payment-method-form').submit();
+        }
+    }
+
+    // Initialize with COD selected
+    document.addEventListener('DOMContentLoaded', function() {
+        selectPaymentMethod('cod');
+        var proceedBtn = document.getElementById('proceed-btn');
+        if (proceedBtn) {
+            proceedBtn.disabled = false;
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}
