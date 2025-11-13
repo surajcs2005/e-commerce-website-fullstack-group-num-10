@@ -5,7 +5,8 @@ SECRET_KEY = 'django-insecure-6jcs#-ulw-&+-ksm=_oe%cddt3*@b_ee@xww^0=q50!$$xbtv-
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['e-commerce-website-fullstack-group-num-10.onrender.com', 'localhost', '127.0.0.1']
+
 
 # Application definition
 INSTALLED_APPS = [
